@@ -7,7 +7,7 @@ public class Address {
     private String zip;
 
 
-    private boolean checkStreetName(String strname) {
+    boolean checkStreetName(String strname) {
 
         for (int i = 0; i < strname.length(); i++) {
             if (!Character.isLetter(strname.charAt(i))) 
@@ -17,7 +17,7 @@ public class Address {
         return true;
     }
 
-    private boolean checkCity(String cityName) {
+    boolean checkCity(String cityName) {
 
         for (int i = 0; i < cityName.length(); i++) {
             char c = cityName.charAt(i);
@@ -30,7 +30,7 @@ public class Address {
         return true;
     }
 
-    private boolean checkState(String stateAbbr) {
+    boolean checkState(String stateAbbr) {
 
         for (int i = 0; i < stateAbbr.length(); i++) {
             char c = stateAbbr.charAt(i);
@@ -47,7 +47,7 @@ public class Address {
         return true;
     }
 
-    private boolean checkZip(String zipCode) {
+    boolean checkZip(String zipCode) {
 
         if (zipCode.length() != 5) {
             return false;
@@ -64,7 +64,7 @@ public class Address {
         return true;
     }
     
-    private static capitalize(String s) {
+    static capitalized(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
@@ -91,9 +91,9 @@ public class Address {
             throw new IllegalArgumentException("Invalid zip code!");
 
         this.streetNumber = streetNumber;
-        this.streetName = capitalize(streetName.trim());
+        this.streetName = capitalized(streetName.trim());
         this.theRest = theRest;
-        this.city = capitalize(city.trim());
+        this.city = capitalized(city.trim());
         this.state = state;
         this.zip = zip;
 
@@ -120,7 +120,7 @@ public class Address {
         if (!checkStreetName(newStreetName))
             throw new IllegalArgumentException("Invalid street name! If street name contains numbers (52nd, for example), spell it out (Fifty Second).");
 
-        this.streetName = capitalize(newStreetName.trim());
+        this.streetName = capitalized(newStreetName.trim());
     }
 
     public double getTheRest() {
@@ -139,7 +139,7 @@ public class Address {
         if (!checkCity(newCity))
             throw new IllegalArgumentException("Invalid city name!");
 
-        this.city = capitalize(newCity.trim());
+        this.city = capitalized(newCity.trim());
     }
 
     public double getState() {
