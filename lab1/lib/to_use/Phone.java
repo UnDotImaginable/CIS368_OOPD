@@ -3,7 +3,7 @@ public class Phone {
     private String exchange;
     private String extension;
 
-    private boolean checkAreaCode(String code) {
+    boolean checkAreaCode(String code) {
 
         if (code.length() != 3)
             return false;
@@ -20,7 +20,7 @@ public class Phone {
         return true;
     }
 
-    private boolean checkExchange(String exc) {
+    boolean checkExchange(String exc) {
 
         if (exc.length() != 3)
             return false;
@@ -37,7 +37,7 @@ public class Phone {
         return true;
     }
 
-    private boolean checkExtension(String ext) {
+    boolean checkExtension(String ext) {
 
         if (ext.length() != 4)
             return false;

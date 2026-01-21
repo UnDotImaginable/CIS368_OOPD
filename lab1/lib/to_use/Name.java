@@ -3,7 +3,7 @@ public class Name {
     private String middleInitial;
     private String last;
 
-    private static boolean contentChecker(String s, String label) {
+    static boolean contentChecker(String s, String label) {
 
             if (s == null) {
                 if ("middle".equals(label)) {
@@ -29,7 +29,7 @@ public class Name {
         return false;
     }
 
-    private static capitalize(String s) {
+    static capitalize(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
