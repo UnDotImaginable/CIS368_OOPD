@@ -1,10 +1,11 @@
+package to_use;
+
 import java.util.ArrayList;
-import to_use.Phone;
 
 public class PhoneList {
     private ArrayList<Phone> phoneArray;
 
-    PhoneList() {
+    public PhoneList() {
         phoneArray = new ArrayList<>();
     }
 
