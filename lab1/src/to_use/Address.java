@@ -1,3 +1,5 @@
+package to_use;
+
 public class Address {
     private double streetNumber;
     private String streetName;
@@ -7,17 +9,19 @@ public class Address {
     private String zip;
 
 
-    boolean checkStreetName(String strname) {
+    static boolean checkStreetName(String strname) {
 
         for (int i = 0; i < strname.length(); i++) {
-            if (!Character.isLetter(strname.charAt(i))) 
+            char c = strname.charAt(i);
+
+            if (!Character.isLetter(c) && c != ' ') 
                 return false;
         }
 
         return true;
     }
 
-    boolean checkCity(String cityName) {
+    static boolean checkCity(String cityName) {
 
         for (int i = 0; i < cityName.length(); i++) {
             char c = cityName.charAt(i);
@@ -30,7 +34,7 @@ public class Address {
         return true;
     }
 
-    boolean checkState(String stateAbbr) {
+    static boolean checkState(String stateAbbr) {
 
         for (int i = 0; i < stateAbbr.length(); i++) {
             char c = stateAbbr.charAt(i);
@@ -47,7 +51,7 @@ public class Address {
         return true;
     }
 
-    boolean checkZip(String zipCode) {
+    static boolean checkZip(String zipCode) {
 
         if (zipCode.length() != 5) {
             return false;
@@ -64,17 +68,14 @@ public class Address {
         return true;
     }
     
-    static capitalized(String s) {
-        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
-    }
 
 
 
-    Address() {
+    public Address() {
 
     }
 
-    Address(double streetNumber, String streetName, String theRest, String city, String state, String zip) {
+    public Address(double streetNumber, String streetName, String theRest, String city, String state, String zip) {
         if (streetNumber < 0) 
             throw new IllegalArgumentException("Invalid street number!");
 
@@ -91,9 +92,9 @@ public class Address {
             throw new IllegalArgumentException("Invalid zip code!");
 
         this.streetNumber = streetNumber;
-        this.streetName = capitalized(streetName.trim());
+        this.streetName = Name.capitalize(streetName.trim());
         this.theRest = theRest;
-        this.city = capitalized(city.trim());
+        this.city = Name.capitalize(city.trim());
         this.state = state;
         this.zip = zip;
 
@@ -112,7 +113,7 @@ public class Address {
         this.streetNumber = newStreetNumber;
     }
 
-    public double getStreetName() {
+    public String getStreetName() {
         return streetName;
     }
 
@@ -120,10 +121,10 @@ public class Address {
         if (!checkStreetName(newStreetName))
             throw new IllegalArgumentException("Invalid street name! If street name contains numbers (52nd, for example), spell it out (Fifty Second).");
 
-        this.streetName = capitalized(newStreetName.trim());
+        this.streetName = Name.capitalize(newStreetName.trim());
     }
 
-    public double getTheRest() {
+    public String getTheRest() {
         return theRest;
     }
 
@@ -131,7 +132,7 @@ public class Address {
         this.theRest = newTheRest;
     }
 
-    public double getCity() {
+    public String getCity() {
         return city;
     }
 
@@ -139,10 +140,10 @@ public class Address {
         if (!checkCity(newCity))
             throw new IllegalArgumentException("Invalid city name!");
 
-        this.city = capitalized(newCity.trim());
+        this.city = Name.capitalize(newCity.trim());
     }
 
-    public double getState() {
+    public String getState() {
         return state;
     }
 
@@ -153,7 +154,7 @@ public class Address {
         this.state = newState;
     }
 
-    public double getZip() {
+    public String getZip() {
         return zip;
     }
 

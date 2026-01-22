@@ -1,3 +1,5 @@
+package to_use;
+
 public class Name {
     private String first;
     private String middleInitial;
@@ -14,6 +16,8 @@ public class Name {
         if ("first".equals(label) || "last".equals(label)) {
             
             for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+
                 if (!Character.isLetter(c) && c != '-' && c != '\'') {
                     return false;
                 }
@@ -29,15 +33,15 @@ public class Name {
         return false;
     }
 
-    static capitalize(String s) {
+    static String capitalize(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
-    Name() {
+    public Name() {
 
     }
 
-    Name(String first, String middleInitial, String last) {
+    public Name(String first, String middleInitial, String last) {
         if (first == null || first.isBlank())
             throw new IllegalArgumentException("First name is required!");
         

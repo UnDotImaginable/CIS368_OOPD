@@ -1,3 +1,5 @@
+package to_use;
+
 public class Phone {
     private String areaCode;
     private String exchange;
@@ -56,11 +58,11 @@ public class Phone {
 
 
 
-    Phone() {
+    public Phone() {
         
     }
 
-    Phone(String areaCode, String exchange, String extension) {
+    public Phone(String areaCode, String exchange, String extension) {
         if (!checkAreaCode(areaCode))
             throw new IllegalArgumentException("Invalid area code!");
         
