@@ -1,6 +1,6 @@
 package to_use;
 
-public class Address {
+public class Address implements java.io.Serializable {
     private double streetNumber;
     private String streetName;
     private String theRest;

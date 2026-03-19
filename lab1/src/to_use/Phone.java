@@ -1,6 +1,6 @@
 package to_use;
 
-public class Phone {
+public class Phone implements java.io.Serializable {
     private String areaCode;
     private String exchange;
     private String extension;

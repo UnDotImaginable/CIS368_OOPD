@@ -2,7 +2,7 @@ package to_use;
 
 import java.util.ArrayList;
 
-public class PhoneList {
+public class PhoneList implements java.io.Serializable {
     private ArrayList<Phone> phoneArray;
 
     public PhoneList() {
@@ -32,6 +32,20 @@ public class PhoneList {
             
             System.out.println(" --- " + areaCode + "-" + exchange + "-" + extension);
         }
+    }
+
+    public String getPhoneNumbers() {
+        String out = "";
+        for (Phone p : phoneArray) {
+            String areaCode = p.getAreaCode();
+            String exchange = p.getExchange();
+            String extension = p.getExtension();
+            
+            String entry = " --- " + areaCode + "-" + exchange + "-" + extension;
+            out = out + entry;
+        }
+
+        return out;
     }
 
     public void clearPhoneArray() {
