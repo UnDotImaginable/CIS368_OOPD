@@ -1,3 +1,11 @@
+//Group 16 - 3/19/26
+
+/**
+GUI.java
+This class runs the GUI for the application. 
+It allows you to populate a TableView with StudentRecord objects, save to a binary file, and load from a binary file.
+*/
+
 package to_use;
 
 import javafx.application.Application;

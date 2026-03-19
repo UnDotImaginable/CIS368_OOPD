@@ -1,3 +1,10 @@
+//Group 16 - 3/19/26
+
+/**
+ * StudentArray.java
+ * This class wraps an ArrayList to store Graduate and Undergraduate StudentRecord objects.
+ */
+
 package to_use;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
