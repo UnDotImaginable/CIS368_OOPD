@@ -1,6 +1,6 @@
 package to_use;
 
-public class PersonInfo {
+public class PersonInfo implements java.io.Serializable {
     private Name name;
     private Address address;
     private PhoneList phoneList;
@@ -114,6 +114,10 @@ public class PersonInfo {
 
     public void showPhoneList() {
         phoneList.showPhoneNumbers();
+    }
+
+    public String getPhoneNumbers() {
+        return phoneList.getPhoneNumbers();
     }
 
     public void addNewNumber(Phone newNumber) {

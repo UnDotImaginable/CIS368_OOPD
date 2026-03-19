@@ -1,6 +1,6 @@
 package to_use;
 
-public class Name {
+public class Name implements java.io.Serializable {
     private String first;
     private String middleInitial;
     private String last;
