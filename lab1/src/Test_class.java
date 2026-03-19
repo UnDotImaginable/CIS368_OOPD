@@ -47,7 +47,8 @@ public class Test_class {
 
 		System.out.println("END OLD -----------------------------------------");
 
-		//GUI.updateListFromArrayList(stuArr.getStudentList());
+		//Comment out the line below to disable loading from test program
+		GUI.updateListFromArrayList(stuArr.getStudentList());
 		GUI.main(args);
 		
     }
