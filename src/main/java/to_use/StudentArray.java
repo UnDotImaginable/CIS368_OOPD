@@ -47,13 +47,11 @@ public class StudentArray  implements java.io.Serializable {
     //returns the first index with a matching ID, -1 otherwise 
     public int getIndexByStudentId(int findId)
     {
-        for (StudentRecord t : studentList) {
-            if(t.getId() == findId)
-            {
-                return t.getId();
+        for (int i = 0; i < studentList.size(); i++){
+            if (studentList.get(i).getId() == findId) {
+                return i;
             }
         }
-        
         return -1;
     }
 

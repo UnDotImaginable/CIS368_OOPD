@@ -1,0 +1,13 @@
+to_use\Name.class
+to_use\Transcript.class
+to_use\StudentRecord.class
+to_use\PhoneList.class
+to_use\PersonInfo.class
+to_use\Undergraduate.class
+to_use\GUI.class
+to_use\Test_class.class
+to_use\Phone.class
+to_use\Address.class
+to_use\Graduate.class
+to_use\StudentArray.class
+to_use\Course.class

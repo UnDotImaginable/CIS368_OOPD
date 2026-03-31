@@ -1,4 +1,4 @@
-import to_use.*;
+package to_use;
 
 public class Test_class {
     public static void main(String[] args) throws Exception {
@@ -27,9 +27,9 @@ public class Test_class {
 		PersonInfo stu_p3 = new PersonInfo(stu3, stu_Address3, stu_phonelist3);
 		stu_p3.addNewNumber("216", "334", "3815");
 
-		StudentRecord stu_r1 = new Graduate("8999999",stu_p1);
-		StudentRecord stu_r2 = new Undergraduate("7999999",stu_p2);
-		StudentRecord stu_r3 = new Graduate("6999999",stu_p3);
+		StudentRecord stu_r1 = new Graduate("8999999",stu_p1, "Ohio State", 18500.0);
+		StudentRecord stu_r2 = new Undergraduate("7999999",stu_p2, "Computer Science", "Math");
+		StudentRecord stu_r3 = new Graduate("6999999",stu_p3, "Kent State", 21000.0);
 
 		StudentArray stuArr = new StudentArray(stu_r1, stu_r2, stu_r3);
 
