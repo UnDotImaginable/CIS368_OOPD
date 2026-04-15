@@ -764,6 +764,7 @@ public class ViewManager {
                             " rows inserted successfully! Updating table(s)...",
                         console
                     );
+
                     updateTables();
                 } catch (SQLException sqe) {
                     append("Error: " + sqe.getMessage(), console);
@@ -833,6 +834,7 @@ public class ViewManager {
                             " rows inserted successfully! Updating student record table...",
                         console
                     );
+
                     updateTables();
                 } catch (SQLException sqe) {
                     append("Error: " + sqe.getMessage(), console);
@@ -864,6 +866,7 @@ public class ViewManager {
                         " rows inserted successfully! Updating phone number table...",
                     console
                 );
+
                 updateTables();
             } catch (SQLException sqe) {
                 append("Error: " + sqe.getMessage(), console);
@@ -901,6 +904,7 @@ public class ViewManager {
                         " rows inserted successfully! Updating course table...",
                     console
                 );
+
                 updateTables();
             } catch (SQLException sqe) {
                 append("Error: " + sqe.getMessage(), console);
@@ -1073,7 +1077,6 @@ public class ViewManager {
                 deleteCourses.setString(1, studentId);
                 deleteCourses.executeUpdate();
 
-                // Then delete student
                 PreparedStatement deleteStudent = conn.prepareStatement(
                     "DELETE FROM Student WHERE id = ?"
                 );
@@ -1232,7 +1235,7 @@ public class ViewManager {
         Button addNewRecord = new Button("Add New Record"); // handleAddLogic()
         Button deleteExistingRecord = new Button("Delete Existing Record"); // handleDeleteLogic()
         Button updateExistingRecord = new Button("Update Existing Record"); // handleUpdateLogic()
-        Button findExistingRecord = new Button("Find Existing Record"); // clearFields()
+        Button findExistingRecord = new Button("Find Existing Record"); // handleFindLogic
 
         buttonHolders
             .getChildren()
@@ -1266,10 +1269,6 @@ public class ViewManager {
         );
 
         handleAddLogic(received);
-
-        addNewRecord.setOnAction(event -> {
-            append("Add mode active...\n", console);
-        });
 
         handleDeleteLogic(deleteExistingRecord);
 
