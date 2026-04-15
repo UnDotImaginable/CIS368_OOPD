@@ -32,6 +32,12 @@
       <version>${javafx.version}</version>
     </dependency>
 
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <version>9.6.0</version>
+    </dependency>
+
 
   </dependencies>
 
@@ -83,7 +89,7 @@
           <artifactId>javafx-maven-plugin</artifactId>
           <version>0.0.8</version>
           <configuration>
-            <mainClass>to_use.Test_class</mainClass>
+            <mainClass>to_use.GUI</mainClass>
           </configuration>
         </plugin>
 

@@ -21,6 +21,7 @@ public class StudentRecord  implements java.io.Serializable {
 	private PersonInfo personInfo;
 	private Transcript transcript;
 
+	
 	// CONSTRUCTOR
 	public StudentRecord(String idInput, PersonInfo personInfo) {
 		this.id = IdChecker(idInput);
