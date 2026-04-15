@@ -48,7 +48,7 @@ public class ViewManager {
         public Button addCourse = new Button("Add Course");
     }
 
-    class StudentData {
+    public static class StudentData {
 
         private SimpleStringProperty id;
         private SimpleStringProperty first;
@@ -154,7 +154,7 @@ public class ViewManager {
         }
     }
 
-    class PhoneNumberData {
+    public static class PhoneNumberData {
 
         private SimpleIntegerProperty phoneId;
         private SimpleStringProperty areaCode;
@@ -197,7 +197,7 @@ public class ViewManager {
         }
     }
 
-    class CourseData {
+    public static class CourseData {
 
         private SimpleIntegerProperty courseId;
         private SimpleStringProperty name;
@@ -256,6 +256,12 @@ public class ViewManager {
     TableView<StudentData> stuRecordTable = new TableView<StudentData>();
     TableView<PhoneNumberData> phoneNumTable = new TableView<PhoneNumberData>();
     TableView<CourseData> courseTable = new TableView<CourseData>();
+
+    final ObservableList<StudentData> stu = FXCollections.observableArrayList();
+    final ObservableList<PhoneNumberData> phone =
+        FXCollections.observableArrayList();
+    final ObservableList<CourseData> course =
+        FXCollections.observableArrayList();
 
     public ViewManager() {}
 
@@ -391,14 +397,8 @@ public class ViewManager {
         return form;
     }
 
-    public void updateTables() {
-        final ObservableList<StudentData> stu =
-            FXCollections.observableArrayList();
-        final ObservableList<PhoneNumberData> phone =
-            FXCollections.observableArrayList();
-        final ObservableList<CourseData> course =
-            FXCollections.observableArrayList();
-
+    // Tables only need to be set up ONCE!
+    public void setupTables() {
         TableColumn<StudentData, String> idColumn = new TableColumn<>(
             "Student ID"
         );
@@ -578,6 +578,13 @@ public class ViewManager {
                 gradeColumn,
                 courseForeignColumn
             );
+    }
+
+    // They're then updated repeatedly as we make changes to the data within our DB
+    public void updateTables() {
+        stu.clear();
+        phone.clear();
+        course.clear();
 
         try (
             Connection conn = DriverManager.getConnection(url, user, password)
@@ -689,19 +696,10 @@ public class ViewManager {
         stuRecordTable.setItems(stu);
         phoneNumTable.setItems(phone);
         courseTable.setItems(course);
-    }
 
-    // ----------------------------------------------------------------------
-    private String safeGet(HashMap<String, TextField> map, String key) {
-        TextField tf = map.get(key);
-
-        if (tf == null) {
-            System.out.println("❌ NULL KEY: " + key);
-            System.out.println("Available keys: " + map.keySet());
-            throw new RuntimeException("Missing key: " + key);
-        }
-
-        return tf.getText();
+        stuRecordTable.refresh();
+        phoneNumTable.refresh();
+        courseTable.refresh();
     }
 
     public void handleAddLogic(StudentForm form) {
@@ -741,7 +739,7 @@ public class ViewManager {
                     // st.setString(5, form.studentInputs.get("Street Number").getText());
                     st.setString(
                         5,
-                        safeGet(form.studentInputs, "Street Number")
+                        form.studentInputs.get("Street Number").getText()
                     );
                     st.setString(
                         6,
@@ -766,6 +764,7 @@ public class ViewManager {
                             " rows inserted successfully! Updating table(s)...",
                         console
                     );
+                    updateTables();
                 } catch (SQLException sqe) {
                     append("Error: " + sqe.getMessage(), console);
                 }
@@ -813,7 +812,10 @@ public class ViewManager {
                     );
                     st.setString(8, form.studentInputs.get("City").getText());
                     st.setString(9, form.studentInputs.get("State").getText());
-                    st.setString(10, form.studentInputs.get("Zip").getText());
+                    st.setString(
+                        10,
+                        form.studentInputs.get("Zip Code").getText()
+                    );
                     st.setString(
                         11,
                         form.studentInputs.get("Undergrad Inst.").getText()
@@ -831,6 +833,7 @@ public class ViewManager {
                             " rows inserted successfully! Updating student record table...",
                         console
                     );
+                    updateTables();
                 } catch (SQLException sqe) {
                     append("Error: " + sqe.getMessage(), console);
                 }
@@ -861,6 +864,7 @@ public class ViewManager {
                         " rows inserted successfully! Updating phone number table...",
                     console
                 );
+                updateTables();
             } catch (SQLException sqe) {
                 append("Error: " + sqe.getMessage(), console);
             }
@@ -897,25 +901,292 @@ public class ViewManager {
                         " rows inserted successfully! Updating course table...",
                     console
                 );
+                updateTables();
             } catch (SQLException sqe) {
                 append("Error: " + sqe.getMessage(), console);
             }
         });
-
-        updateTables();
     }
 
     // TODO:   add code here later
-    public void handleUpdateLogic(GridPane container) {}
+    public void handleUpdateLogic(StudentForm form, Button updateButton) {
+        updateButton.setOnAction(event -> {
+            String id = form.studentInputs.get("Student ID").getText();
+
+            if (id == null || id.isEmpty()) {
+                append("Student ID required for update.\n", console);
+                return;
+            }
+
+            String query;
+
+            if ("Undergraduate".equals(form.studentStatus.getValue())) {
+                query =
+                    "UPDATE Student SET first=?, middle=?, last=?, streetNumber=?, streetName=?, theRest=?, city=?, state=?, zip=?, major=?, minor=?, undergradInst=NULL, stipend=NULL WHERE id=?";
+
+                try (
+                    Connection conn = DriverManager.getConnection(
+                        url,
+                        user,
+                        password
+                    )
+                ) {
+                    PreparedStatement st = conn.prepareStatement(query);
+
+                    st.setString(
+                        1,
+                        form.studentInputs.get("First Name").getText()
+                    );
+                    st.setString(
+                        2,
+                        form.studentInputs.get("Middle Initial").getText()
+                    );
+                    st.setString(
+                        3,
+                        form.studentInputs.get("Last Name").getText()
+                    );
+                    st.setString(
+                        4,
+                        form.studentInputs.get("Street Number").getText()
+                    );
+                    st.setString(
+                        5,
+                        form.studentInputs.get("Street Name").getText()
+                    );
+                    st.setString(
+                        6,
+                        form.studentInputs.get("The Rest").getText()
+                    );
+                    st.setString(7, form.studentInputs.get("City").getText());
+                    st.setString(8, form.studentInputs.get("State").getText());
+                    st.setString(
+                        9,
+                        form.studentInputs.get("Zip Code").getText()
+                    );
+                    st.setString(10, form.studentInputs.get("Major").getText());
+                    st.setString(11, form.studentInputs.get("Minor").getText());
+                    st.setString(12, id);
+
+                    int rows = st.executeUpdate();
+                    append(rows + " student updated.\n", console);
+
+                    updateTables();
+                } catch (SQLException sqe) {
+                    append("Update error: " + sqe.getMessage(), console);
+                }
+            } else {
+                query =
+                    "UPDATE Student SET first=?, middle=?, last=?, streetNumber=?, streetName=?, theRest=?, city=?, state=?, zip=?, undergradInst=?, stipend=?, major=NULL, minor=NULL WHERE id=?";
+
+                try (
+                    Connection conn = DriverManager.getConnection(
+                        url,
+                        user,
+                        password
+                    )
+                ) {
+                    PreparedStatement st = conn.prepareStatement(query);
+
+                    st.setString(
+                        1,
+                        form.studentInputs.get("First Name").getText()
+                    );
+                    st.setString(
+                        2,
+                        form.studentInputs.get("Middle Initial").getText()
+                    );
+                    st.setString(
+                        3,
+                        form.studentInputs.get("Last Name").getText()
+                    );
+                    st.setString(
+                        4,
+                        form.studentInputs.get("Street Number").getText()
+                    );
+                    st.setString(
+                        5,
+                        form.studentInputs.get("Street Name").getText()
+                    );
+                    st.setString(
+                        6,
+                        form.studentInputs.get("The Rest").getText()
+                    );
+                    st.setString(7, form.studentInputs.get("City").getText());
+                    st.setString(8, form.studentInputs.get("State").getText());
+                    st.setString(
+                        9,
+                        form.studentInputs.get("Zip Code").getText()
+                    );
+                    st.setString(
+                        10,
+                        form.studentInputs.get("Undergrad Inst.").getText()
+                    );
+                    st.setDouble(
+                        11,
+                        Double.parseDouble(
+                            form.studentInputs.get("Stipend").getText()
+                        )
+                    );
+                    st.setString(12, id);
+
+                    int rows = st.executeUpdate();
+                    append(rows + " student updated.\n", console);
+
+                    updateTables();
+                } catch (SQLException sqe) {
+                    append("Update error: " + sqe.getMessage(), console);
+                }
+            }
+        });
+    }
 
     // TODO: add code here later
-    public void handleDeleteLogic(GridPane container) {}
+    public void handleDeleteLogic(Button deleteButton) {
+        deleteButton.setOnAction(event -> {
+            StudentData selected = stuRecordTable
+                .getSelectionModel()
+                .getSelectedItem();
+
+            if (selected == null) {
+                append("No student selected.\n", console);
+                return;
+            }
+
+            String studentId = selected.idProperty().get();
+
+            try (
+                Connection conn = DriverManager.getConnection(
+                    url,
+                    user,
+                    password
+                )
+            ) {
+                PreparedStatement deletePhones = conn.prepareStatement(
+                    "DELETE FROM PhoneNumber WHERE id = ?"
+                );
+                deletePhones.setString(1, studentId);
+                deletePhones.executeUpdate();
+
+                PreparedStatement deleteCourses = conn.prepareStatement(
+                    "DELETE FROM Course WHERE id = ?"
+                );
+                deleteCourses.setString(1, studentId);
+                deleteCourses.executeUpdate();
+
+                // Then delete student
+                PreparedStatement deleteStudent = conn.prepareStatement(
+                    "DELETE FROM Student WHERE id = ?"
+                );
+                deleteStudent.setString(1, studentId);
+
+                int rowsDeleted = deleteStudent.executeUpdate();
+
+                append(rowsDeleted + " student deleted.\n", console);
+
+                updateTables();
+            } catch (SQLException sqe) {
+                append("Delete error: " + sqe.getMessage(), console);
+            }
+        });
+    }
 
     // TODO: add code here later
-    public void handleFindLogic(GridPane container) {}
+    public void handleFindLogic(StudentForm form, Button findButton) {
+        findButton.setOnAction(event -> {
+            String id = form.studentInputs.get("Student ID").getText();
+
+            if (id == null || id.isEmpty()) {
+                append("Enter Student ID to search.\n", console);
+                return;
+            }
+
+            try (
+                Connection conn = DriverManager.getConnection(
+                    url,
+                    user,
+                    password
+                )
+            ) {
+                PreparedStatement st = conn.prepareStatement(
+                    "SELECT * FROM Student WHERE id = ?"
+                );
+                st.setString(1, id);
+
+                ResultSet rs = st.executeQuery();
+
+                if (rs.next()) {
+                    form.studentInputs
+                        .get("First Name")
+                        .setText(rs.getString("first"));
+                    form.studentInputs
+                        .get("Middle Initial")
+                        .setText(rs.getString("middle"));
+                    form.studentInputs
+                        .get("Last Name")
+                        .setText(rs.getString("last"));
+                    form.studentInputs
+                        .get("Street Number")
+                        .setText(rs.getString("streetNumber"));
+                    form.studentInputs
+                        .get("Street Name")
+                        .setText(rs.getString("streetName"));
+                    form.studentInputs
+                        .get("The Rest")
+                        .setText(rs.getString("theRest"));
+                    form.studentInputs
+                        .get("City")
+                        .setText(rs.getString("city"));
+                    form.studentInputs
+                        .get("State")
+                        .setText(rs.getString("state"));
+                    form.studentInputs
+                        .get("Zip Code")
+                        .setText(rs.getString("zip"));
+
+                    form.studentInputs
+                        .get("Major")
+                        .setText(rs.getString("major"));
+                    form.studentInputs
+                        .get("Minor")
+                        .setText(rs.getString("minor"));
+                    form.studentInputs
+                        .get("Undergrad Inst.")
+                        .setText(rs.getString("undergradInst"));
+
+                    double stipend = rs.getDouble("stipend");
+                    form.studentInputs
+                        .get("Stipend")
+                        .setText(String.valueOf(stipend));
+
+                    append("Student found.\n", console);
+                } else {
+                    append("No student found.\n", console);
+                }
+            } catch (SQLException sqe) {
+                append("Find error: " + sqe.getMessage(), console);
+            }
+        });
+    }
 
     public void homePage() {
-        ScrollPane tableView = new ScrollPane();
+        VBox tableContainer = new VBox(10);
+
+        Label stuLabel = new Label("Students");
+        Label phoneLabel = new Label("Phone Numbers");
+        Label courseLabel = new Label("Courses");
+
+        tableContainer
+            .getChildren()
+            .addAll(
+                stuLabel,
+                stuRecordTable,
+                phoneLabel,
+                phoneNumTable,
+                courseLabel,
+                courseTable
+            );
+        ScrollPane tableView = new ScrollPane(tableContainer);
+
         tableView.setStyle(
             "-fx-background-color: #e0e0e0; -fx-border-color: black;"
         );
@@ -946,7 +1217,6 @@ public class ViewManager {
         */
 
         VBox tvWorkspace = new VBox(10);
-        VBox uiWorkspace = new VBox(10);
 
         StackPane bannerHolder = new StackPane();
         Text banner = new Text("What needs to be done?");
@@ -1001,9 +1271,11 @@ public class ViewManager {
             append("Add mode active...\n", console);
         });
 
-        // deleteExistingRecord.setOnAction(event -> {
-        //     delete(dynamicFormContainer);
-        // });
+        handleDeleteLogic(deleteExistingRecord);
+
+        handleFindLogic(received, findExistingRecord);
+
+        handleUpdateLogic(received, updateExistingRecord);
 
         // updateExistingRecord.setOnAction(event -> {
         //     update(dynamicFormContainer);
@@ -1014,6 +1286,12 @@ public class ViewManager {
         // });
 
         userInput.setContent(tvWorkspace);
+
+        setupTables();
+
+        stageRef.setOnShown(e -> {
+            updateTables();
+        });
 
         // ------------------------------------------------     LOGIC END    ---------------------------------------------------------------------------
 
