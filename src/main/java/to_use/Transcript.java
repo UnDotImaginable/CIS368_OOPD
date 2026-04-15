@@ -35,6 +35,11 @@ public class Transcript implements java.io.Serializable {
 		courses.add(course);
 	}
 
+    public void addCourse(String name, String dep, String courseNum, String numGrade) {
+		courses.add(new Course(name, dep, courseNum, numGrade));
+
+    }
+
 	public boolean removeCourse(Course course) {
 		if (course == null)
 			throw new IllegalArgumentException("Cannot remove null course.");

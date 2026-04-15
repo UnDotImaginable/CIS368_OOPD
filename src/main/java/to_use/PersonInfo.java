@@ -6,7 +6,9 @@ public class PersonInfo implements java.io.Serializable {
     private PhoneList phoneList;
 
     public PersonInfo() {
-
+        name = new Name();
+        address = new Address();
+        phoneList = new PhoneList();
     }
 
     // Most likely won't need additional checking HERE 
