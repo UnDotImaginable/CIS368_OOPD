@@ -10,5 +10,22 @@
         "lab1/lib/javafx/javafx.web.jar",
         "lab1/lib/javafx/javafx-swt.jar"
     ],
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "connect_to_student_record",
+            "database": "student_record",
+            "username": "root",
+            "askForPassword": true
+        }
+    ]
 }
