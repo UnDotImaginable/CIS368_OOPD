@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -24,13 +25,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import to_use.ViewManager.StudentData;
 
 public class ViewManager {
 
@@ -1171,7 +1172,7 @@ public class ViewManager {
         });
     }
 
-    public void homePage() {
+    public void readAndWrite() {
         VBox tableContainer = new VBox(10);
 
         Label stuLabel = new Label("Students");
@@ -1297,6 +1298,98 @@ public class ViewManager {
         Scene sc = new Scene(baseContainer, 1000, 900);
         stageRef.setScene(sc);
         stageRef.setTitle("Home Page");
+        stageRef.show();
+    }
+
+    public void read() {
+        VBox tableContainer = new VBox(10);
+        ScrollPane tableView = new ScrollPane(tableContainer);
+
+        tableView.setStyle(
+            "-fx-background-color: #e0e0e0; -fx-border-color: black;"
+        );
+
+        setupTables();
+        updateTables();
+
+        tableContainer.getChildren().addAll(stuRecordTable, phoneNumTable, courseTable);
+
+        stuRecordTable.setMinHeight(200);
+        phoneNumTable.setMinHeight(200);
+        courseTable.setMinHeight(200);
+
+        tableView.setFitToWidth(true);
+
+        Scene sc = new Scene(tableView, 1000, 900);
+        stageRef.setScene(sc);
+        stageRef.setTitle("Read and Write");
+        stageRef.show();
+    }
+
+    public void loginPage() {
+        Label usernameLabel = new Label("Username:");
+        Label passwordLabel = new Label("Password:");
+        Label userRole = new Label("Role");
+
+        TextField usernameField = new TextField();
+        PasswordField passwordField = new PasswordField();
+        ComboBox<String> roleDropdown = new ComboBox<>();
+
+        Button loginButton = new Button("Login");
+
+        roleDropdown.getItems().addAll("r", "rw", "ov");
+
+        loginButton.setOnAction(event -> {
+            String enteredUsername = usernameField.getText();
+            String enteredPassword = passwordField.getText();
+            boolean isAuthenticated = false;
+
+            try (Connection conn = DriverManager.getConnection(url, user, password);
+                PreparedStatement st = conn.prepareStatement("SELECT EXISTS(SELECT 1 FROM Users WHERE username = ? AND password = ? AND role = ?)")) {
+
+                st.setString(1, enteredUsername);
+                st.setString(2, enteredPassword);
+                st.setString(3, roleDropdown.getValue());
+
+                try (ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        isAuthenticated = rs.getBoolean(1);
+                    }
+                }
+
+                if (isAuthenticated) {
+                    System.out.println("Logged in!");
+
+                    if ("r".equals(roleDropdown.getValue())) {
+                        System.out.println("read only!");
+                        read();
+                    }
+
+                    else if ("rw".equals(roleDropdown.getValue())) {
+                        System.out.println("read and write only!");
+                        readAndWrite();
+                    }
+
+                    else {
+                        System.out.println("overlord!");
+                    }
+                } 
+                else {
+                    System.out.println("Invalid login!");
+                }
+
+            } catch (SQLException sqe) {
+                append("Inside loginPage() " + sqe.getMessage(), console);
+            }
+
+        });
+
+        VBox root = new VBox(10);
+        root.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, loginButton, userRole, roleDropdown);
+
+        Scene scene = new Scene(root, 300, 400);
+        stageRef.setScene(scene);
+        stageRef.setTitle("Login Form App");
         stageRef.show();
     }
 }

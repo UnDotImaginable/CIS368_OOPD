@@ -8,7 +8,7 @@ public class GUI extends Application {
     public void start(Stage primaryStage) {
         ViewManager vm = new ViewManager(primaryStage);
 
-        vm.homePage();
+        vm.loginPage();
     }
 
     public static void main(String[] args) {
