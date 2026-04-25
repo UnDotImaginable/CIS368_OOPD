@@ -198,6 +198,37 @@ public class ViewManager {
         }
     }
 
+    public static class UsersData {
+        private SimpleIntegerProperty usersId;
+        private SimpleStringProperty username;
+        private SimpleStringProperty password;
+        private SimpleStringProperty role;
+
+        public UsersData(Integer usersId, String username, String password, String role) {
+            this.usersId = new SimpleIntegerProperty(usersId);
+            this.username = new SimpleStringProperty(username);
+            this.password = new SimpleStringProperty(password);
+            this.role = new SimpleStringProperty(role);
+        }
+
+
+        public SimpleIntegerProperty usersIdProperty() {
+            return usersId;
+        }
+
+        public SimpleStringProperty usernameProperty() {
+            return username;
+        }
+
+        public SimpleStringProperty passwordProperty() {
+            return password;
+        }
+
+        public SimpleStringProperty roleProperty() {
+            return role;
+        }
+    }
+
     public static class CourseData {
 
         private SimpleIntegerProperty courseId;
@@ -257,12 +288,12 @@ public class ViewManager {
     TableView<StudentData> stuRecordTable = new TableView<StudentData>();
     TableView<PhoneNumberData> phoneNumTable = new TableView<PhoneNumberData>();
     TableView<CourseData> courseTable = new TableView<CourseData>();
+    TableView<UsersData> usersTable = new TableView<UsersData>(); // only used in overlord()
 
     final ObservableList<StudentData> stu = FXCollections.observableArrayList();
-    final ObservableList<PhoneNumberData> phone =
-        FXCollections.observableArrayList();
-    final ObservableList<CourseData> course =
-        FXCollections.observableArrayList();
+    final ObservableList<PhoneNumberData> phone = FXCollections.observableArrayList();
+    final ObservableList<CourseData> course = FXCollections.observableArrayList();
+    final ObservableList<UsersData> userT = FXCollections.observableArrayList(); // only used in overlord()
 
     public ViewManager() {}
 
@@ -913,7 +944,6 @@ public class ViewManager {
         });
     }
 
-    // TODO:   add code here later
     public void handleUpdateLogic(StudentForm form, Button updateButton) {
         updateButton.setOnAction(event -> {
             String id = form.studentInputs.get("Student ID").getText();
@@ -1045,7 +1075,6 @@ public class ViewManager {
         });
     }
 
-    // TODO: add code here later
     public void handleDeleteLogic(Button deleteButton) {
         deleteButton.setOnAction(event -> {
             StudentData selected = stuRecordTable
@@ -1094,7 +1123,6 @@ public class ViewManager {
         });
     }
 
-    // TODO: add code here later
     public void handleFindLogic(StudentForm form, Button findButton) {
         findButton.setOnAction(event -> {
             String id = form.studentInputs.get("Student ID").getText();
@@ -1210,15 +1238,6 @@ public class ViewManager {
         baseContainer.setCenter(centerSplit);
         baseContainer.setBottom(console);
 
-        // ------------------------------------------------     LOGIC START    ---------------------------------------------------------------------------
-
-        /*
-            Four CORE operations:
-                - Add new record
-                - Delete existing record
-                - Update existing record
-                - Find existing record
-        */
 
         VBox tvWorkspace = new VBox(10);
 
@@ -1277,17 +1296,12 @@ public class ViewManager {
 
         handleUpdateLogic(received, updateExistingRecord);
 
-        // updateExistingRecord.setOnAction(event -> {
-        //     update(dynamicFormContainer);
-        // });
-
-        // findExistingRecord.setOnAction(event -> {
-        //     find(dynamicFormContainer);
-        // });
 
         userInput.setContent(tvWorkspace);
 
         setupTables();
+
+        updateTables();
 
         stageRef.setOnShown(e -> {
             updateTables();
@@ -1325,6 +1339,295 @@ public class ViewManager {
         stageRef.setTitle("Read and Write");
         stageRef.show();
     }
+
+
+    public void updateUsersTable() {
+        userT.clear();
+
+        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+            String query = "select * from Users";
+            PreparedStatement st = conn.prepareStatement(query);
+
+            ResultSet rs = st.executeQuery();
+
+            while(rs.next()) {
+                Integer usersId = rs.getInt("users_id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String role = rs.getString("role");
+
+                userT.add(new UsersData(usersId, username, password, role));
+            }
+
+        }
+
+        catch(SQLException sqe) {
+            append("Inside updateUsersTable()" + sqe.getMessage(), console);
+        }
+
+        usersTable.setItems(userT);
+        usersTable.refresh();
+    }
+
+    public void overlord() {
+        VBox tableContainer = new VBox(10);
+
+        Label stuLabel = new Label("Students");
+        Label phoneLabel = new Label("Phone Numbers");
+        Label courseLabel = new Label("Courses");
+
+        tableContainer
+            .getChildren()
+            .addAll(
+                stuLabel,
+                stuRecordTable,
+                phoneLabel,
+                phoneNumTable,
+                courseLabel,
+                courseTable
+            );
+        ScrollPane tableView = new ScrollPane(tableContainer);
+
+        tableView.setStyle(
+            "-fx-background-color: #e0e0e0; -fx-border-color: black;"
+        );
+
+        ScrollPane userInput = new ScrollPane();
+        userInput.setStyle(
+            "-fx-background-color: #f5f5f5; -fx-border-color: black;"
+        );
+
+        HBox centerSplit = new HBox();
+        centerSplit.getChildren().addAll(tableView, userInput);
+
+        HBox.setHgrow(tableView, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(userInput, javafx.scene.layout.Priority.ALWAYS);
+
+        BorderPane baseContainer = new BorderPane();
+        baseContainer.setCenter(centerSplit);
+        baseContainer.setBottom(console);
+
+
+        VBox tvWorkspace = new VBox(10);
+
+        StackPane bannerHolder = new StackPane();
+        Text banner = new Text("What needs to be done?");
+        banner.setFont(Font.font("SF Pro Text", FontWeight.NORMAL, 18));
+
+        bannerHolder.setPadding(new Insets(10, 20, 20, 0));
+
+        bannerHolder.getChildren().add(banner);
+        tvWorkspace.getChildren().addAll(bannerHolder);
+
+        VBox buttonHolders = new VBox(8);
+
+        Button addNewRecord = new Button("Add New Record"); // handleAddLogic()
+        Button deleteExistingRecord = new Button("Delete Existing Record"); // handleDeleteLogic()
+        Button updateExistingRecord = new Button("Update Existing Record"); // handleUpdateLogic()
+        Button findExistingRecord = new Button("Find Existing Record"); // handleFindLogic
+
+        buttonHolders
+            .getChildren()
+            .addAll(
+                addNewRecord,
+                updateExistingRecord,
+                deleteExistingRecord,
+                findExistingRecord
+            );
+        buttonHolders.setPadding(new Insets(0, 0, 0, 10));
+
+        tvWorkspace.getChildren().addAll(buttonHolders);
+
+        GridPane dynamicFormContainer = new GridPane();
+        dynamicFormContainer.setPadding(new Insets(20));
+
+        GridPane phoneNumberAdder = new GridPane();
+        phoneNumberAdder.setPadding(new Insets(20));
+
+        GridPane courseAdder = new GridPane();
+        courseAdder.setPadding(new Insets(20));
+
+        tvWorkspace
+            .getChildren()
+            .addAll(dynamicFormContainer, phoneNumberAdder, courseAdder);
+
+        StudentForm received = buildStudentForm(
+            dynamicFormContainer,
+            phoneNumberAdder,
+            courseAdder
+        );
+
+        handleAddLogic(received);
+        handleDeleteLogic(deleteExistingRecord);
+        handleFindLogic(received, findExistingRecord);
+        handleUpdateLogic(received, updateExistingRecord);
+
+
+        userInput.setContent(tvWorkspace);
+
+
+
+
+
+
+
+
+
+
+
+
+
+        TableColumn<UsersData, Integer> usersIdColumn = new TableColumn<>("Users ID" );
+        usersIdColumn.setCellValueFactory(new PropertyValueFactory<>("usersId"));
+       
+        TableColumn<UsersData, String> usernameColumn = new TableColumn<>("Username" );
+        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+
+        TableColumn<UsersData, String> passwordColumn = new TableColumn<>("Password" );
+        passwordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
+
+        TableColumn<UsersData, String> roleColumn = new TableColumn<>("Role" );
+        roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
+
+        usersTable.getColumns().addAll(usersIdColumn, usernameColumn, passwordColumn, roleColumn);
+
+        tableContainer.getChildren().addAll(new Label("Users Table"), usersTable);
+
+
+        Label roleLabel = new Label("Role: ");
+        ComboBox<String> roleInput = new ComboBox<>();
+        roleInput.getItems().addAll("r", "rw", "ov");
+
+
+        Button submitUser = new Button("Add User");
+        Button updateUser = new Button("Update User");
+        Button deleteUser = new Button("Delete User");
+
+
+        GridPane usersFormContainer = new GridPane();
+        dynamicFormContainer.setPadding(new Insets(20));
+
+        VBox usernameField = new VBox(5);
+        VBox passwordField = new VBox(5);
+        VBox oldUsernameField = new VBox(5);
+
+        Label usernameLabel = new Label("Username");
+        Label passwordLabel = new Label("Password");
+        Label oldUsernameLabel = new Label("Old Username");
+        TextField usernameInput = new TextField();
+        TextField passwordInput = new TextField();
+        TextField oldUsernameInput = new TextField();
+
+        usernameField.getChildren().addAll(usernameLabel, usernameInput, passwordLabel, passwordInput, oldUsernameLabel, oldUsernameInput);
+
+        usersFormContainer.add(usernameField, 1, 0);
+        usersFormContainer.add(passwordField, 2, 0);
+        usersFormContainer.add(oldUsernameField, 3, 0);
+
+
+
+        VBox roleHolder = new VBox(5);
+        roleHolder.getChildren().addAll(roleLabel, roleInput);
+        usersFormContainer.add(roleHolder, 4, 0);
+
+
+        usersFormContainer.add(submitUser, 1, 1);
+        usersFormContainer.add(deleteUser, 2, 1);
+        usersFormContainer.add(updateUser, 3, 1);
+
+
+
+
+        submitUser.setOnAction(event -> {
+            String query = "insert into Users (username, password, role) values (?, ?, ?)";
+
+            try(Connection conn = DriverManager.getConnection(url, user, password)) {
+                PreparedStatement st = conn.prepareStatement(query);
+
+                st.setString(1, usernameInput.getText());
+                st.setString(2, passwordInput.getText());
+                st.setString(3, roleInput.getValue());
+
+                int rowsInserted = st.executeUpdate();
+
+                append(rowsInserted + " rows inserted successfully! Updating table...\n", console);
+
+                updateUsersTable();
+            }
+
+            catch(SQLException sqe) {
+                append("In submitUser.setOnAction() " + sqe.getMessage(), console);
+            }
+        });
+
+        deleteUser.setOnAction(event -> {
+            String query = "delete from Users where username = ?";
+
+            try(Connection conn = DriverManager.getConnection(url, user, password)) {
+                PreparedStatement st = conn.prepareStatement(query);
+
+                st.setString(1, usernameInput.getText());
+
+                int rowsInserted = st.executeUpdate();
+
+                append(rowsInserted + " row deleted successfully! Updating table...\n", console);
+
+                updateUsersTable();
+            }
+
+            catch(SQLException sqe) {
+                append("In submitUser.setOnAction() " + sqe.getMessage(), console);
+            }
+        });
+
+        updateUser.setOnAction(event -> {
+            String query = "update Users set username=?, password=?, role=? where username = ?";
+
+            try(Connection conn = DriverManager.getConnection(url, user, password)) {
+                PreparedStatement st = conn.prepareStatement(query);
+
+                st.setString(1, usernameInput.getText());
+                st.setString(2, passwordInput.getText());
+                st.setString(3, roleInput.getValue());
+                st.setString(4, oldUsernameInput.getText());
+
+
+                int rowsInserted = st.executeUpdate();
+
+                append(rowsInserted + " row updated successfully! Updating table...\n", console);
+
+                updateUsersTable();
+            }
+
+            catch(SQLException sqe) {
+                append("In submitUser.setOnAction() " + sqe.getMessage(), console);
+            }
+        });
+
+        tvWorkspace.getChildren().add(usersFormContainer);
+
+        setupTables();
+
+
+        updateTables();
+        updateUsersTable();
+
+        stageRef.setOnShown(e -> {
+            updateTables();
+            updateUsersTable();
+        });
+
+        // ------------------------------------------------     LOGIC END    ---------------------------------------------------------------------------
+
+        Scene sc = new Scene(baseContainer, 1000, 900);
+        stageRef.setScene(sc);
+        stageRef.setTitle("Home Page");
+        stageRef.show();
+
+
+
+    }
+
 
     public void loginPage() {
         Label usernameLabel = new Label("Username:");
@@ -1372,6 +1675,7 @@ public class ViewManager {
 
                     else {
                         System.out.println("overlord!");
+                        overlord();
                     }
                 } 
                 else {
