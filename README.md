@@ -26,34 +26,34 @@
  
 - Setup Steps:
   1. Clone the repository:
-         'git clone <github.com/UnDotImaginable/CIS368_OOPD'
-         'cd CIS368_OOPD'
+      'git clone <github.com/UnDotImaginable/CIS368_OOPD'
+      'cd CIS368_OOPD'
   2. Create the database:
-         'CREATE DATABASE student_record;'
+      'CREATE DATABASE student_record;'
   3. Run the SQL files in order:
-         - Student.sql
-         - PhoneNumber.sql
-         - Course.sql
+      - Student.sql
+      - PhoneNumber.sql
+      - Course.sql
   4. Update the database credentials if necessary in 'ViewManager.java'
   5. Compile:
-         'mvn clean compile'
+      'mvn clean compile'
   6. Run the program:
-         'mvn javafx:run'
+      'mvn javafx:run'
 
 ### Sample Test Run
   1. Launch the program -> the login screen appears
   2. Login using one of the following roles:
-         - 'r' read-only access
-         - 'rw' read and write access
-         - 'ov' admin (user and data management) 
+        - 'r' read-only access
+        - 'rw' read and write access
+        - 'ov' admin (user and data management) 
   3. After login:
-         - View students in table
-         - Add a new student (graduate or undergraduate)
-         - Update an existing student by ID
-         - Delete a student by ID
-         - Find a student by ID
+        - View students in table
+        - Add a new student (graduate or undergraduate)
+        - Update an existing student by ID
+        - Delete a student by ID
+        - Find a student by ID
   4. Save/Load functionality:
-         - Enter file path -> click Save or Load
+        - Enter file path -> click Save or Load
 
 #### All parts function as intended by the instructions.
 
