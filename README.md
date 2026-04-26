@@ -26,19 +26,19 @@
  
 - Setup Steps:
   1. Clone the repository:
-    - 'git clone <github.com/UnDotImaginable/CIS368_OOPD'
-    - 'cd CIS368_OOPD'
+      - 'git clone <github.com/UnDotImaginable/CIS368_OOPD'
+      - 'cd CIS368_OOPD'
   2. Create the database:
-    - 'CREATE DATABASE student_record;'
+      - 'CREATE DATABASE student_record;'
   3. Run the SQL files in order:
       - Student.sql
       - PhoneNumber.sql
       - Course.sql
   4. Update the database credentials if necessary in 'ViewManager.java'
   5. Compile:
-      'mvn clean compile'
+      - 'mvn clean compile'
   6. Run the program:
-      'mvn javafx:run'
+      - 'mvn javafx:run'
 
 ### Sample Test Run
   1. Launch the program -> the login screen appears
