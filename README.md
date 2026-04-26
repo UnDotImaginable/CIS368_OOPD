@@ -26,10 +26,10 @@
  
 - Setup Steps:
   1. Clone the repository:
-      'git clone <github.com/UnDotImaginable/CIS368_OOPD'
-      'cd CIS368_OOPD'
+    - 'git clone <github.com/UnDotImaginable/CIS368_OOPD'
+    - 'cd CIS368_OOPD'
   2. Create the database:
-      'CREATE DATABASE student_record;'
+    - 'CREATE DATABASE student_record;'
   3. Run the SQL files in order:
       - Student.sql
       - PhoneNumber.sql
