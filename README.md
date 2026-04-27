@@ -34,6 +34,7 @@
       - Student.sql
       - PhoneNumber.sql
       - Course.sql
+      - Users.sql
   4. Update the database credentials if necessary in 'ViewManager.java'
   5. Compile:
       - 'mvn clean compile'
