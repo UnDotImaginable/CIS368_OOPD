@@ -12,11 +12,12 @@
 - Instructor: Dr. Jackie Woldering
 
 - Group Contribution:
-    - Ethan Pedrick - 20% - Part 4, README, general help
-    - Carver Ossoff - 20% - ..., general help
-    - Abhi Siri - 20% - ..., general help
-    - Veer Gaudani - 20% - ..., general help
-    - Nabeel Mesleh - 20% ..., general help
+    - Ethan Pedrick - 20% 
+    - Carver Ossoff - 20% 
+    - Abhi Siri - 20% 
+    - Veer Gaudani - 20%
+    - Nabeel Mesleh - 20%
+  Project work was spread evenly with each member contributing parts while assisting with bugfixing and other tasks as needed.
  
 ### Compiling Instruction and Execution Sequence:
 - Requirements:
