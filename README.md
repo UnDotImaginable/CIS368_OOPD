@@ -17,7 +17,7 @@
     - Abhi Siri - 20% 
     - Veer Gaudani - 20%
     - Nabeel Mesleh - 20%
-  Project work was spread evenly with each member contributing parts while assisting with bugfixing and other tasks as needed.
+    - Project work was spread evenly with each member contributing towards the project parts while assisting with bugfixing and other tasks as needed.
  
 ### Compiling Instruction and Execution Sequence:
 - Requirements:
